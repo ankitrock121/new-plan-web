@@ -340,6 +340,64 @@
         .page {
             min-height: calc(100vh - 160px);
         }
+
+        /* Club-specific styles */
+        .club-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .club-info i {
+            color: #667eea;
+            margin-right: 0.5rem;
+            width: 16px;
+        }
+
+        .activity-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .activity-tag {
+            background: linear-gradient(135deg, #f0f2ff 0%, #e8ebff 100%);
+            color: #4a5568;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+
+        .activity-tag:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .join-button {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .join-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .join-button.joined {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+        }
+
+        .join-button.joined:hover {
+            background: linear-gradient(135deg, #218838 0%, #1c9970 100%) !important;
+        }
     </style>
 </head>
 <body>
@@ -354,6 +412,7 @@
                 { id: 'home', label: 'Home', icon: 'fas fa-home' },
                 { id: 'about', label: 'About', icon: 'fas fa-info-circle' },
                 { id: 'destinations', label: 'Destinations', icon: 'fas fa-map-marked-alt' },
+                { id: 'clubs', label: 'Clubs', icon: 'fas fa-users' },
                 { id: 'gallery', label: 'Gallery', icon: 'fas fa-camera' },
                 { id: 'blog', label: 'Blog', icon: 'fas fa-blog' },
                 { id: 'contact', label: 'Contact', icon: 'fas fa-envelope' }
@@ -790,6 +849,147 @@
             );
         };
 
+        // Clubs Page Component
+        const Clubs = () => {
+            const [joinedClubs, setJoinedClubs] = useState(new Set());
+            
+            const clubs = [
+                {
+                    id: 1,
+                    name: "Adventure Seekers",
+                    description: "For thrill-seekers who love extreme sports and outdoor adventures. Join us for hiking, rock climbing, and adrenaline-pumping activities worldwide.",
+                    members: 2847,
+                    image: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                    activities: ["Hiking", "Rock Climbing", "Bungee Jumping", "Skydiving"],
+                    nextTrip: "Swiss Alps - March 2025"
+                },
+                {
+                    id: 2,
+                    name: "Cultural Explorers",
+                    description: "Dive deep into local cultures, traditions, and histories. Perfect for travelers who want authentic experiences and meaningful connections.",
+                    members: 1923,
+                    image: "https://images.unsplash.com/photo-1539650116574-75c0c6d73a0e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                    activities: ["Museum Tours", "Local Cuisine", "Art Workshops", "Language Exchange"],
+                    nextTrip: "Kyoto, Japan - April 2025"
+                },
+                {
+                    id: 3,
+                    name: "Photography Enthusiasts",
+                    description: "Capture the world's beauty through your lens. Join photographers of all skill levels for photo walks and workshop tours.",
+                    members: 1456,
+                    image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                    activities: ["Photo Walks", "Workshops", "Golden Hour Tours", "Wildlife Photography"],
+                    nextTrip: "Iceland - May 2025"
+                },
+                {
+                    id: 4,
+                    name: "Beach & Relaxation",
+                    description: "For those who prefer sun, sand, and serenity. Enjoy peaceful beach destinations and spa retreats with like-minded travelers.",
+                    members: 3156,
+                    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                    activities: ["Beach Activities", "Spa Treatments", "Yoga Sessions", "Sunset Cruises"],
+                    nextTrip: "Maldives - June 2025"
+                },
+                {
+                    id: 5,
+                    name: "Solo Travelers United",
+                    description: "Connect with fellow solo travelers for group adventures. Perfect for making new friends while exploring the world independently.",
+                    members: 2234,
+                    image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                    activities: ["Group Meetups", "Safety Tips", "Shared Experiences", "Buddy System"],
+                    nextTrip: "Barcelona, Spain - April 2025"
+                },
+                {
+                    id: 6,
+                    name: "Budget Backpackers",
+                    description: "Travel more while spending less. Share budget tips, find travel buddies, and discover affordable hidden gems around the world.",
+                    members: 4127,
+                    image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                    activities: ["Budget Planning", "Hostel Reviews", "Local Transportation", "Free Activities"],
+                    nextTrip: "Southeast Asia Circuit - July 2025"
+                }
+            ];
+
+            const handleJoinClub = (clubId) => {
+                setJoinedClubs(prev => {
+                    const newSet = new Set(prev);
+                    if (newSet.has(clubId)) {
+                        newSet.delete(clubId);
+                    } else {
+                        newSet.add(clubId);
+                    }
+                    return newSet;
+                });
+            };
+
+            return (
+                <div className="page">
+                    <section className="section">
+                        <h2>Travel Clubs</h2>
+                        <p style={{ textAlign: 'center', marginBottom: '3rem', fontSize: '1.2rem' }}>
+                            Join travel clubs to connect with like-minded adventurers and discover amazing destinations together
+                        </p>
+                        <div className="destinations-grid">
+                            {clubs.map(club => (
+                                <div key={club.id} className="destination-card">
+                                    <img src={club.image} alt={club.name} />
+                                    <div className="card-content">
+                                        <h3>{club.name}</h3>
+                                        <p style={{ marginBottom: '1rem' }}>{club.description}</p>
+                                        
+                                        <div style={{ marginBottom: '1rem' }}>
+                                            <div className="club-info">
+                                                <i className="fas fa-users"></i>
+                                                <span>{club.members.toLocaleString()} members</span>
+                                            </div>
+                                            <div className="club-info">
+                                                <i className="fas fa-calendar"></i>
+                                                <span>Next trip: {club.nextTrip}</span>
+                                            </div>
+                                        </div>
+
+                                        <div style={{ marginBottom: '1rem' }}>
+                                            <strong style={{ fontSize: '0.9rem', color: '#333' }}>Activities:</strong>
+                                            <div className="activity-tags">
+                                                {club.activities.map((activity, index) => (
+                                                    <span key={index} className="activity-tag">
+                                                        {activity}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <button 
+                                            className={`cta-button join-button ${joinedClubs.has(club.id) ? 'joined' : ''}`}
+                                            style={{ 
+                                                width: '100%', 
+                                                marginTop: '1rem',
+                                                background: joinedClubs.has(club.id) ? undefined : '#667eea',
+                                                border: 'none'
+                                            }}
+                                            onClick={() => handleJoinClub(club.id)}
+                                        >
+                                            {joinedClubs.has(club.id) ? (
+                                                <>
+                                                    <i className="fas fa-check" style={{ marginRight: '0.5rem' }}></i>
+                                                    Joined
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <i className="fas fa-plus" style={{ marginRight: '0.5rem' }}></i>
+                                                    Join Club
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                </div>
+            );
+        };
+
         // Footer Component
         const Footer = () => {
             return (
@@ -814,6 +1014,8 @@
                         return <About />;
                     case 'destinations':
                         return <Destinations />;
+                    case 'clubs':
+                        return <Clubs />;
                     case 'gallery':
                         return <Gallery />;
                     case 'blog':
